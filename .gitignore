@@ -59,3 +59,13 @@ typings/
 
 # next.js build output
 .next
+
+# live2d core and framework
+Core/*
+Framework/*
+
+# built live2d framework
+common/*
+
+# live2d asset
+*/**/asset/*
