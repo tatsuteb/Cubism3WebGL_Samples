@@ -39,10 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
       * Live2Dモデルの初期化
       */
 
-      const model = new AppCubismUserModel();
-    //   const model = new ModelBuilder()
-    //     .SetupModel(moc)
-    //     .SetupTexture(texture[])
+    //   const resource: AppCubismUserModelResource = 
+    //     AppCubismUserModelResource.Loader
+    //         .loadFromModel3Json('path to the *.model3.json');
+
+    //   const model: AppCubismUserModel = new AppCubismUserModelBuilder()
+    //     .setResource(resource)
     //     .build();
 
 });
