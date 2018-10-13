@@ -8,4 +8,15 @@ export default class AppCubismUserModel extends CubismUserModel {
         super();
     }
 
+
+    public update() {
+
+        // ポーズ
+        if (this._pose !== null)
+            this._pose.updateParameters(this._model, 0);
+            
+        this._model.update();
+
+    }
+
 }
