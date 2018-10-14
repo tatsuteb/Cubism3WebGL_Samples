@@ -1,3 +1,4 @@
+// Framework
 import { Live2DCubismFramework } from '../../../Framework/live2dcubismframework';
 import CubismFramework = Live2DCubismFramework.CubismFramework;
 
@@ -7,6 +8,19 @@ import ICubismModelSetting = icubismmodelsetting.ICubismModelSetting;
 import { Live2DCubismFramework as cubismmodelsettingjson } from '../../../Framework/cubismmodelsettingjson';
 import CubismModelSettingJson = cubismmodelsettingjson.CubismModelSettingJson;
 
+// math
+import { Live2DCubismFramework as cubismmodelmatrix } from '../../../Framework/math/cubismmodelmatrix';
+import CubismModelMatrix = cubismmodelmatrix.CubismModelMatrix;
+
+import { Live2DCubismFramework as cubismmatrix44 } from '../../../Framework/math/cubismmatrix44';
+import CubismMatrix44 = cubismmatrix44.CubismMatrix44;
+
+// // type
+// import { Live2DCubismFramework as csmmap} from '../../../Framework/type/csmmap';
+// import csmMap = csmmap.csmMap;
+
+
+// CubismUserModel
 import AppCubismUserModel from './class/AppCubismUserModel';
 
 
@@ -20,9 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
      */
 
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    canvas.width = 800;
-    canvas.height = 600;
-
 
     /**
      * WebGLコンテキストの初期化
@@ -124,10 +135,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     model.getRenderer().setIsPremultipliedAlpha(false);
     model.getRenderer().startUp(gl);
 
-    
+
+    /**
+     * Live2Dモデルのサイズ調整
+     */
+
+    const projectionMatrix = new CubismMatrix44();
+    const scale = 2;
+    projectionMatrix.scale(scale * canvas.height / canvas.width, scale);
+    projectionMatrix.multiplyByMatrix(model.getModelMatrix());
+    model.getRenderer().setMvpMatrix(projectionMatrix);
+
+
     /**
      * Live2Dモデルの描画
      */
+
 
     //  頂点の更新
     model.update();
