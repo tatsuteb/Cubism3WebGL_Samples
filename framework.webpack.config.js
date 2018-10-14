@@ -29,7 +29,7 @@ module.exports = {
 
     output: {
         filename : '[name].js',
-        path: path.join(__dirname, 'common')
+        path: path.join(__dirname, 'Samples/common')
     },
 
     module: {

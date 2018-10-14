@@ -1,10 +1,10 @@
-import { Live2DCubismFramework } from '../../Framework/live2dcubismframework';
+import { Live2DCubismFramework } from '../../../Framework/live2dcubismframework';
 import CubismFramework = Live2DCubismFramework.CubismFramework;
 
-import { Live2DCubismFramework as icubismmodelsetting } from '../../Framework/icubismmodelsetting';
+import { Live2DCubismFramework as icubismmodelsetting } from '../../../Framework/icubismmodelsetting';
 import ICubismModelSetting = icubismmodelsetting.ICubismModelSetting;
 
-import { Live2DCubismFramework as cubismmodelsettingjson } from '../../Framework/cubismmodelsettingjson';
+import { Live2DCubismFramework as cubismmodelsettingjson } from '../../../Framework/cubismmodelsettingjson';
 import CubismModelSettingJson = cubismmodelsettingjson.CubismModelSettingJson;
 
 import AppCubismUserModel from './class/AppCubismUserModel';
@@ -12,15 +12,17 @@ import AppCubismUserModel from './class/AppCubismUserModel';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    const assetDir = './asset/Haru/';
+    const resourcesDir = '../../Resources/Haru/';
+
 
     /**
      * Canvasの初期化
      */
 
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    canvas.width = 512;
-    canvas.height = 512;
+    canvas.width = 800;
+    canvas.height = 600;
+
 
     /**
      * WebGLコンテキストの初期化
@@ -43,11 +45,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     CubismFramework.startUp();
     CubismFramework.initialize();
 
+
     /**
      * .model3.jsonファイルを読み込む
      */
 
-    const model3JsonArrayBuffer = await loadAsArrayBufferAsync(`${assetDir}Haru.model3.json`)
+    const model3JsonArrayBuffer = await loadAsArrayBufferAsync(`${resourcesDir}Haru.model3.json`)
         .catch(error => {
             console.log(error);
             return null;
@@ -55,18 +58,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (model3JsonArrayBuffer === null) return;
 
+
     /**
      * ModelSettingオブジェクトを作成
      */
 
     const modelSetting = new CubismModelSettingJson(model3JsonArrayBuffer, model3JsonArrayBuffer.byteLength) as ICubismModelSetting;
 
+
     /**
      * Live2Dモデルの表示に必要なファイルを読み込む
      */
 
     // .moc3
-    const moc3FilePath = `${assetDir}${modelSetting.getModelFileName()}`;
+    const moc3FilePath = `${resourcesDir}${modelSetting.getModelFileName()}`;
     const moc3ArrayBuffer = await loadAsArrayBufferAsync(`${moc3FilePath}`)
         .catch(error => {
             console.log(error);
@@ -79,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const textures: WebGLTexture[] = [];
     const textureCount = modelSetting.getTextureCount();
     for (let i = 0; i < textureCount; i++) {
-        const textureFilePath = `${assetDir}${modelSetting.getTextureFileName(i)}`;
+        const textureFilePath = `${resourcesDir}${modelSetting.getTextureFileName(i)}`;
         textures.push(await createTexture(textureFilePath, gl));
     }
 
@@ -89,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
      */
 
     // .pose3.json
-    const pose3FilePath = `${assetDir}${modelSetting.getPoseFileName()}`;
+    const pose3FilePath = `${resourcesDir}${modelSetting.getPoseFileName()}`;
     const pose3ArrayBuffer = await loadAsArrayBufferAsync(`${pose3FilePath}`)
         .catch(error => {
             console.log(error);

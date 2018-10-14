@@ -1,4 +1,4 @@
-import { Live2DCubismFramework as cubismusermodel} from '../../../Framework/model/cubismusermodel';
+import { Live2DCubismFramework as cubismusermodel} from '../../../../Framework/model/cubismusermodel';
 import CubismUserModel = cubismusermodel.CubismUserModel;
 
 

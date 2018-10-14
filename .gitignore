@@ -65,7 +65,7 @@ Core/*
 Framework/*
 
 # built live2d framework
-common/*
+Samples/common/*
 
 # live2d asset
-*/**/asset/*
+Samples/Resources/*
