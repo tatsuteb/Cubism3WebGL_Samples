@@ -63,9 +63,13 @@ typings/
 # live2d core and framework
 Core/*
 Framework/*
+!Core/README.md
+!Framework/README.md
 
 # built live2d framework
 Samples/common/*
 
 # live2d asset
 Samples/Resources/*
+!Samples/Resources/README.md
+

@@ -9,16 +9,8 @@ import { Live2DCubismFramework as cubismmodelsettingjson } from '../../../Framew
 import CubismModelSettingJson = cubismmodelsettingjson.CubismModelSettingJson;
 
 // math
-// import { Live2DCubismFramework as cubismmodelmatrix } from '../../../Framework/math/cubismmodelmatrix';
-// import CubismModelMatrix = cubismmodelmatrix.CubismModelMatrix;
-
 import { Live2DCubismFramework as cubismmatrix44 } from '../../../Framework/math/cubismmatrix44';
 import CubismMatrix44 = cubismmatrix44.CubismMatrix44;
-
-// // type
-// import { Live2DCubismFramework as csmmap} from '../../../Framework/type/csmmap';
-// import csmMap = csmmap.csmMap;
-
 
 // CubismUserModel
 import AppCubismUserModel from './class/AppCubismUserModel';
@@ -34,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
      */
 
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    
 
     /**
      * WebGLコンテキストの初期化
@@ -140,15 +133,19 @@ document.addEventListener('DOMContentLoaded', async () => {
      * Live2Dモデルのサイズ調整
      */
 
-    // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めている
+    // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
     const modelMatrix = model.getModelMatrix();
     const projectionMatrix = new CubismMatrix44();
     const scale = 4;
     // NOTE:
-    // 1×1にしたモデルを、キャンバスのサイズになるように引き延ばそうとする
-    // キャンバスの幅を基準にして正方形に数には、高さを canvas.width/canvas.height 倍する
-    // キャンバスの高さを基準にするときは、幅を canvas.height / canvas.width 倍する
-    projectionMatrix.scale(scale, scale * canvas.width / canvas.height);
+    // 1×1にしたモデルを、キャンバスの縦横比になるように引き延ばそうとする
+    // 高さを調整してモデルを正しく表示するには、高さを canvas.width/canvas.height 倍する
+    // 幅を調整してモデルを正しく表示するには、幅を canvas.height / canvas.width 倍する
+    projectionMatrix.scale(1, canvas.width / canvas.height);
+
+    // モデルが良い感じの大きさになるように拡大・縮小
+    projectionMatrix.scaleRelative(scale, scale);
+
     projectionMatrix.multiplyByMatrix(modelMatrix);
     model.getRenderer().setMvpMatrix(projectionMatrix);
 
