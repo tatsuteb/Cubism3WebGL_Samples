@@ -152,7 +152,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     model.loadModel(moc3ArrayBuffer);
     
     // モーションデータをロード
-    motionResources.forEach((motionResource: IMotionResource) => model.addMotion(motionResource));
+    motionResources.forEach((motionResource: IMotionResource) => 
+        model.addMotion(motionResource));
 
     // ポーズデータをロード
     if (pose3ArrayBuffer !== null)
@@ -196,12 +197,51 @@ document.addEventListener('DOMContentLoaded', async () => {
      */
 
 
-    //  頂点の更新
-    model.update();
+     const draw = () => {
 
-    // モデルの描画
-    model.getRenderer().drawModel();
+         //  頂点の更新
+         model.update();
+     
+         // モデルの描画
+         model.getRenderer().drawModel();
 
+         requestAnimationFrame(draw);
+
+     }
+     requestAnimationFrame(draw);
+
+
+    /**
+     * HTML要素の初期化
+     */
+
+     // モーション選択
+    const motionSelector = document.getElementById('motionSelector') as HTMLSelectElement;
+    if (!!motionSelector) {
+
+        motionSelector.innerHTML = '';
+        const optionNoMotion = document.createElement('option');
+        optionNoMotion.value = '';
+        optionNoMotion.text = '--';
+        motionSelector.appendChild(optionNoMotion);
+
+        motionResources.forEach((motionResource: IMotionResource) => {
+
+            const option = document.createElement('option');
+            option.value = motionResource.motionName;
+            option.text = motionResource.motionName;
+
+            motionSelector.appendChild(option);
+
+        });
+
+        motionSelector.addEventListener('change', () => {
+
+            model.startMotion(motionSelector.value);
+
+        });
+
+    }
 
     //   const resource: AppCubismUserModelResource = 
     //     await AppCubismUserModelResource.Loader
