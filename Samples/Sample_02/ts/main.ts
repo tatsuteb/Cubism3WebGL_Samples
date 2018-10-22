@@ -19,6 +19,7 @@ import ISampleResource from './interface/ISampleResource';
 import IMotionResource from './interface/IMotionResource';
 import SampleResourceLoader from './class/SampleResourceLoader';
 import SampleApplication from './class/SampleApplication';
+import AppCubismUserModelBuilder from './class/AppCubismUserModelBuilder';
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -42,8 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const sampleApp: SampleApplication = new SampleApplication(canvas);
 
-    const model: AppCubismUserModel = AppCubismUserModel
-        .fromSampleResource(resource);
+    const model: AppCubismUserModel = await new AppCubismUserModelBuilder()
+        .setGlContext(sampleApp.gl)
+        .fromSampleResourceAsync(resource);
 
     await sampleApp.setModelAsync(model);
 

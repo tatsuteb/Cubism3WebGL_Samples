@@ -12,8 +12,8 @@ import AppCubismUserModel from "./AppCubismUserModel";
 export default class SampleApplication {
 
     private readonly _canvas: HTMLCanvasElement;
+    private _gl: WebGLRenderingContext;
     private model: AppCubismUserModel;
-    private gl: WebGLRenderingContext;
     private requestId: number;
 
     constructor(canvas?: HTMLCanvasElement) {
@@ -29,7 +29,7 @@ export default class SampleApplication {
         }
 
         this.model = null;
-        this.gl = null;
+        this._gl = null;
         this.requestId = 0;
 
 
@@ -46,9 +46,14 @@ export default class SampleApplication {
     }
 
 
-    public async setModelAsync(model: AppCubismUserModel): Promise<SampleApplication> {
+    get gl(): WebGLRenderingContext {
 
-        await model.setUpTextureAsync(this.gl);
+        return this._gl;
+
+    }
+
+
+    public async setModelAsync(model: AppCubismUserModel): Promise<SampleApplication> {
 
         // NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
         const modelMatrix = model.getModelMatrix();
@@ -100,19 +105,19 @@ export default class SampleApplication {
     private initGlContext() {
 
         // WebGLコンテキストの初期化
-        this.gl = this.canvas.getContext('webgl') ||
+        this._gl = this.canvas.getContext('webgl') ||
             this.canvas.getContext("experimental-webgl");
 
-        if (this.gl === null) {
+        if (this._gl === null) {
             alert("WebGL未対応のブラウザです。");
             return;
         }
 
-        this.gl.enable(this.gl.BLEND);
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
-        this.gl.enable(this.gl.DEPTH_TEST);
-        this.gl.depthFunc(this.gl.LEQUAL);
+        this._gl.enable(this._gl.BLEND);
+        this._gl.blendFunc(this._gl.SRC_ALPHA, this._gl.ONE_MINUS_SRC_ALPHA);
+        this._gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        this._gl.enable(this._gl.DEPTH_TEST);
+        this._gl.depthFunc(this._gl.LEQUAL);
 
     }
 
