@@ -15,8 +15,7 @@ import CubismMatrix44 = cubismmatrix44.CubismMatrix44;
 // CubismUserModel
 import AppCubismUserModel from './class/AppCubismUserModel';
 
-import ISampleResource from './interface/ISampleResource';
-import IMotionResource from './interface/IMotionResource';
+import ISampleResource, { IMotionResource, IExpressionResource } from './interface/ISampleResource';
 import SampleResourceLoader from './class/SampleResourceLoader';
 import SampleApplication from './class/SampleApplication';
 import AppCubismUserModelBuilder from './class/AppCubismUserModelBuilder';
@@ -79,6 +78,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         motionSelector.addEventListener('change', () => {
 
             model.startMotion(motionSelector.value);
+
+        });
+
+    }
+
+
+    // 表情の選択
+    const expressionSelector = document.getElementById('expressionSelector') as HTMLSelectElement;
+    if (!!expressionSelector) {
+
+        expressionSelector.innerHTML = '';
+        const optionNoExpression = document.createElement('option');
+        optionNoExpression.value = '';
+        optionNoExpression.text = '--';
+        expressionSelector.appendChild(optionNoExpression);
+
+        resource.expressions.forEach((expressionResource: IExpressionResource) => {
+
+            const option = document.createElement('option');
+            option.value = expressionResource.expressionName;
+            option.text = expressionResource.expressionName;
+
+            expressionSelector.appendChild(option);
+
+        });
+
+        expressionSelector.addEventListener('change', () => {
+
+            model.startExpression(expressionSelector.value);
 
         });
 

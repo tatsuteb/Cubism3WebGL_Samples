@@ -5,6 +5,9 @@ import CubismUserModel = cubismusermodel.CubismUserModel;
 import { Live2DCubismFramework as cubismmotion } from '../../../../Framework/motion/cubismmotion';
 import CubismMotion = cubismmotion.CubismMotion;
 
+import { Live2DCubismFramework as cubismexpressionmotion } from '../../../../Framework/motion/cubismexpressionmotion';
+import CubismExpressionMotion = cubismexpressionmotion.CubismExpressionMotion;
+
 // id
 import { Live2DCubismFramework as cubismid } from '../../../../Framework/id/cubismid';
 import CubismIdHandle = cubismid.CubismIdHandle;
@@ -14,13 +17,14 @@ import { Live2DCubismFramework as csmvector } from '../../../../Framework/type/c
 import csmVector = csmvector.csmVector;
 
 import IMotionResource from '../interface/IMotionResource';
+import { IExpressionResource } from '../interface/ISampleResource';
 
 
 export default class AppCubismUserModel extends CubismUserModel {
 
     private readonly motions: Map<string, CubismMotion>;
+    private readonly expressions: Map<string, CubismExpressionMotion>;
 
-    private texturePaths: string[];
     private lastUpdateTime: number;
 
 
@@ -29,6 +33,7 @@ export default class AppCubismUserModel extends CubismUserModel {
         super();
 
         this.motions = new Map<string, CubismMotion>();
+        this.expressions = new Map<string, CubismExpressionMotion>();
         this.lastUpdateTime = 0;
 
     }
@@ -60,11 +65,27 @@ export default class AppCubismUserModel extends CubismUserModel {
     }
 
 
+    public addExpression(expressionResource: IExpressionResource) {
+
+        const expression: CubismExpressionMotion = this.loadExpression(
+            expressionResource.buffer,
+            expressionResource.buffer.byteLength,
+            expressionResource.expressionName) as CubismExpressionMotion;
+
+        if (this.expressions.has(expressionResource.expressionName)) {
+            this.expressions.delete(expressionResource.expressionName);
+        }
+
+        this.expressions.set(expressionResource.expressionName, expression);
+        
+    }
+
+
     public startMotion(motionName: string) {
 
         const motion = this.motions.get(motionName);
         
-        if (motion === null) {
+        if (motion === null || motion === undefined) {
 
             this._motionManager.stopAllMotions();
             return;
@@ -80,7 +101,34 @@ export default class AppCubismUserModel extends CubismUserModel {
 
     public updateMotion(deltaTimeSeconds: number) {
 
+        if (this._motionManager.isFinished()) return;
+
         this._motionManager.updateMotion(this.getModel(), deltaTimeSeconds);
+
+    }
+
+
+    public startExpression(expressionName: string) {
+
+        const expression = this.expressions.get(expressionName);
+
+        if (expression === null || expression === undefined) {
+
+            this._expressionManager.stopAllMotions();
+            return;
+
+        }
+
+        this._expressionManager.startMotionPriority(expression, false, 2);
+
+    }
+
+
+    public updateExpression(deltaTimeSeconds: number) {
+
+        if (this._expressionManager.isFinished()) return;
+
+        this._expressionManager.updateMotion(this.getModel(), deltaTimeSeconds);
 
     }
 
@@ -92,12 +140,14 @@ export default class AppCubismUserModel extends CubismUserModel {
         this.lastUpdateTime = currentTime;
 
         // モーション
-        if (!this._motionManager.isFinished())
-            this._motionManager.updateMotion(this.getModel(), deltaTime);
+        this.updateMotion(deltaTime);
+
+        // 表情
+        this.updateExpression(deltaTime);
 
         // ポーズ
         if (this._pose !== null)
-            this._pose.updateParameters(this._model, 0);
+            this._pose.updateParameters(this._model, deltaTime);
             
         this._model.update();
 

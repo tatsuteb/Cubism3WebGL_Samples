@@ -4,8 +4,8 @@ import ICubismModelSetting = icubismmodelsetting.ICubismModelSetting;
 import { Live2DCubismFramework as cubismmodelsettingjson } from '../../../../Framework/cubismmodelsettingjson';
 import CubismModelSettingJson = cubismmodelsettingjson.CubismModelSettingJson;
 
-import ISampleResource from "../interface/ISampleResource";
-import IMotionResource from '../interface/IMotionResource';
+import ISampleResource, { IMotionResource, IExpressionResource } from "../interface/ISampleResource";
+// import IMotionResource from '../interface/IMotionResource';
 
 
 export default class SampleResourceLoader {
@@ -40,8 +40,12 @@ export default class SampleResourceLoader {
         resource.motions = motions;
 
         // 表情
+        const expressions = await this.loadExpressionsFromModelSettingAsync(modelSetting, dir);
+        resource.expressions = expressions;
 
         // 物理演算
+        const physics3ArrayBuffer = await this.loadPhysics3ArrayBufferFromModelSettingAsync(modelSetting, dir);
+        resource.physics3ArrayBuffer = physics3ArrayBuffer;
 
         // ポーズ
         const pose3ArrayBuffer = await this.loadPose3ArrayBufferFromModelSettingAsync(modelSetting, dir);
@@ -80,6 +84,8 @@ export default class SampleResourceLoader {
      */
     private static async loadMoc3ArrayBufferFromModelSettingAsync(setting: ICubismModelSetting, dir: string = "./"): Promise<ArrayBuffer> {
 
+        if (setting.getModelFileName() === '') return null;
+        
         const moc3FilePath = `${dir}${setting.getModelFileName()}`;
         const moc3ArrayBuffer = await this.loadAsArrayBufferAsync(`${moc3FilePath}`)
             .catch(error => {
@@ -132,6 +138,8 @@ export default class SampleResourceLoader {
 
             for (let j = 0; j < motionCount; j++) {
 
+                if (setting.getMotionFileName(groupName, j) === '') continue;
+
                 const motionFilePath = `${dir}${setting.getMotionFileName(groupName, j)}`;
                 const buffer = await this.loadAsArrayBufferAsync(motionFilePath)
                     .catch(error => {
@@ -153,6 +161,57 @@ export default class SampleResourceLoader {
         }
 
         return motionResources;
+
+    }
+
+
+    /**
+     * 表情のデータをIExpressionResourceの配列にして返す
+     * @param setting 
+     * @param dir 
+     */
+    private static async loadExpressionsFromModelSettingAsync(setting: ICubismModelSetting, dir: string = "./"): Promise<IExpressionResource[]> {
+
+        const expressionResources: IExpressionResource[] = [];
+
+        const expCount = setting.getExpressionCount();
+        for (let i = 0; i < expCount; i++) {
+
+            if (setting.getExpressionFileName(i) === '') continue;
+
+            const expressionPath = `${dir}${setting.getExpressionFileName(i)}`;
+            const buffer = await this.loadAsArrayBufferAsync(expressionPath)
+            .catch(error => {
+                console.log(error);
+                return null;
+            }) as ArrayBuffer;
+            
+            expressionResources.push({
+                expressionName: setting.getExpressionName(i),
+                buffer: buffer
+            });
+
+        }
+
+        return expressionResources;
+
+    }
+
+
+    private static async loadPhysics3ArrayBufferFromModelSettingAsync(setting: ICubismModelSetting, dir: string = "./"): Promise<ArrayBuffer> {
+
+        if (setting.getPhysicsFileName() === '') return null;
+
+        const physics3FilePath = `${dir}${setting.getPhysicsFileName()}`;
+        const physics3ArrayBuffer = await this.loadAsArrayBufferAsync(`${physics3FilePath}`)
+            .catch(error => {
+                console.log(error);
+                return null;
+            }) as ArrayBuffer;
+    
+        if (physics3ArrayBuffer === null) return null;
+
+        return physics3ArrayBuffer;
 
     }
 

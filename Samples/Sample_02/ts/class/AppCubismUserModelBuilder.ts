@@ -1,5 +1,5 @@
 import AppCubismUserModel from './AppCubismUserModel';
-import ISampleResource from '../interface/ISampleResource';
+import ISampleResource, { IExpressionResource } from '../interface/ISampleResource';
 import IMotionResource from '../interface/IMotionResource';
 
 
@@ -38,6 +38,15 @@ export default class AppCubismUserModelBuilder {
         // モーションデータをロード
         resource.motions.forEach((motionResource: IMotionResource) =>
             model.addMotion(motionResource));
+
+        // 表情のデータをロード
+        if (!!resource.expressions)
+            resource.expressions.forEach((expressionResource: IExpressionResource) =>
+                model.addExpression(expressionResource));
+            
+        // 物理演算のデータをロード
+        if (!!resource.physics3ArrayBuffer)
+            model.loadPhysics(resource.physics3ArrayBuffer, resource.physics3ArrayBuffer.byteLength);
 
         // ポーズデータをロード
         if (resource.pose3ArrayBuffer !== null)
