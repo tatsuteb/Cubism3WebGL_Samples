@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
 
+    // フレームバッファを用意
+    const frameBuffer: WebGLFramebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
     /**
      * Frameworkの初期化
      */
@@ -153,26 +156,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     /**
      * Live2Dモデルの描画
      */
-
-
+    
+    
     //  頂点の更新
     model.update();
+    
+    // フレームバッファとビューポートを、フレームワーク設定
+    const viewport: number[] = [
+        0, 
+        0, 
+        canvas.width,
+        canvas.height
+    ];
+    model.getRenderer().setRenderState(frameBuffer, viewport);
 
     // モデルの描画
     model.getRenderer().drawModel();
-
-
-    //   const resource: AppCubismUserModelResource = 
-    //     await AppCubismUserModelResource.Loader
-    //         .loadFromModel3Json('path to the *.model3.json');
-
-    /**
-     * Live2Dモデルの初期化
-     */
-
-    //   const model: AppCubismUserModel = new AppCubismUserModelBuilder()
-    //     .setResource(resource)
-    //     .build();
 
 });
 
@@ -216,6 +215,9 @@ async function createTexture(path: string, gl: WebGLRenderingContext): Promise<W
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+            // 乗算済みアルファ方式を使用する
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
             // テクスチャにピクセルを書き込む
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
