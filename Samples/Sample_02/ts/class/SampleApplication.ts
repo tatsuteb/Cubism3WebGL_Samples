@@ -12,9 +12,12 @@ import AppCubismUserModel from "./AppCubismUserModel";
 export default class SampleApplication {
 
     private readonly _canvas: HTMLCanvasElement;
+    private readonly viewport: number[];
     private _gl: WebGLRenderingContext;
+    private frameBuffer: WebGLFramebuffer;
     private model: AppCubismUserModel;
     private requestId: number;
+    
 
     constructor(canvas?: HTMLCanvasElement) {
 
@@ -28,8 +31,16 @@ export default class SampleApplication {
 
         }
 
+        this.viewport = [
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        ];
+
         this.model = null;
         this._gl = null;
+        this.frameBuffer = null;
         this.requestId = 0;
 
 
@@ -87,7 +98,10 @@ export default class SampleApplication {
 
             //  頂点の更新
             this.model.update();
-        
+
+            // フレームバッファとビューポートを、フレームワーク設定
+            this.model.getRenderer().setRenderState(this.frameBuffer, this.viewport);
+
             // モデルの描画
             this.model.getRenderer().drawModel();
    
@@ -118,6 +132,8 @@ export default class SampleApplication {
         this._gl.clearColor(0.0, 0.0, 0.0, 0.0);
         this._gl.enable(this._gl.DEPTH_TEST);
         this._gl.depthFunc(this._gl.LEQUAL);
+
+        this.frameBuffer = this._gl.getParameter(this._gl.FRAMEBUFFER_BINDING);
 
     }
 
