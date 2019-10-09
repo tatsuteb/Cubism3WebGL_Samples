@@ -1,5 +1,7 @@
 # Cubism3WebGL_Samples
 
+**Cubism4対応は、[Cubism4WebGL_Samples](https://github.com/tatsuteb/Cubism4WebGL_Samples)**
+
 Live2D Cubism SDK for Web の使い方を勉強するために作ったサンプル集です。
 少しずつサンプルを増やしていく予定です。
 
