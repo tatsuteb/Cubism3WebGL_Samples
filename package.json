@@ -4,8 +4,10 @@
     "watch-framework": "npx webpack --watch --config framework.webpack.config.js --mode development --module-bind 'ts=ts-loader' --resolve-extensions .ts,.js",
     "build-sample_01": "npx webpack --config sample_01.webpack.config.js --mode development --module-bind 'ts=ts-loader' --resolve-extensions .ts,.js",
     "watch-sample_01": "npx webpack --watch --config sample_01.webpack.config.js --mode development --module-bind 'ts=ts-loader' --resolve-extensions .ts,.js",
-    "build-all": "npm-run-all build-framework build-sample",
-    "watch-all": "npm-run-all watch-framework watch-sample"
+    "build-sample_02": "npx webpack --config sample_02.webpack.config.js --mode development --module-bind 'ts=ts-loader' --resolve-extensions .ts,.js",
+    "watch-sample_02": "npx webpack --watch --config sample_02.webpack.config.js --mode development --module-bind 'ts=ts-loader' --resolve-extensions .ts,.js",
+    "build-all": "npm-run-all build-framework build-sample_01 build-sample_02",
+    "watch-all": "npm-run-all watch-framework watch-sample_01 watch-sample_02"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.3",

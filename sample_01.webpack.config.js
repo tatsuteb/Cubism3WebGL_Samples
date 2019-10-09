@@ -8,11 +8,11 @@ module.exports = {
     mode: 'development',
 
     // メインとなるJavaScriptファイル（エントリーポイント）
-    entry: './Sample_01/ts/main.ts',
+    entry: './Samples/Sample_01/ts/main.ts',
 
     output: {
         filename : 'index.js',
-        path: path.join(__dirname, './Sample_01/wwwroot/js')
+        path: path.join(__dirname, './Samples/Sample_01/wwwroot/js')
     },
 
     module: {
